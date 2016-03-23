@@ -5,9 +5,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
-/**
- * Created by vasili on 21-Mar-16.
- */
 public class RocketAnimation extends Animation implements Animation.AnimationListener
 {
     private static final String TAG = "SillyV.RocketAnimation";
@@ -56,14 +53,6 @@ public class RocketAnimation extends Animation implements Animation.AnimationLis
     protected void applyTransformation(float interpolatedTime, Transformation t)
     {
         super.applyTransformation(interpolatedTime, t);
-        //  Log.d(TAG, "applyTransformation: " + interpolatedTime);
-
-        //alpha
-//        if(interpolatedTime < 0.5)
-//            view.setAlpha(1 - interpolatedTime);
-//        else
-//            view.setAlpha(interpolatedTime);
-
 
         // move vertically
         int newX = (int) (originalX + (targetX - originalX) * interpolatedTime);
@@ -88,7 +77,7 @@ public class RocketAnimation extends Animation implements Animation.AnimationLis
     private float calculateY(float interpolatedTime)
     {
         //float y = ((float)Math.pow ((double)(4 * (interpolatedTime - .5)),2d));
-        float y = -(float) (aimCalculator(aim, -4, -1) * interpolatedTime * interpolatedTime + aimCalculator(aim, 4, 2) * interpolatedTime - 1);
+        float y = -(aimCalculator(aim, -4, -1) * interpolatedTime * interpolatedTime + aimCalculator(aim, 4, 2) * interpolatedTime - 1);
         Log.d(TAG, interpolatedTime + " turns into " + y);
         return y;
     }
