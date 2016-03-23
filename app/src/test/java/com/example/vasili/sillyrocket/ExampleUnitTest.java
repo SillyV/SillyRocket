@@ -1,4 +1,4 @@
-package com.rocket.vasili.sillyrocket;
+package com.sillyv.vasili.boomtank;
 
 import org.junit.Test;
 

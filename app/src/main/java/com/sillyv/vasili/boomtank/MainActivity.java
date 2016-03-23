@@ -1,4 +1,4 @@
-package com.rocket.vasili.sillyrocket;
+package com.sillyv.vasili.boomtank;
 
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity implements RocketAnimation.R
 {
 
     private static final String TAG = "SillyV.MainActivity";
-
+    ///constants
     private static final int LOADING_GAME = 0;
     private static final int WAITING_FOR_BUTTON_CLICK = 1;
     private static final int RUNNING_TIMER = 2;
@@ -22,18 +22,22 @@ public class MainActivity extends AppCompatActivity implements RocketAnimation.R
     private int gameState = 0;
 
 
+    //views
     View sky;
     View target;
     View rocket;
     TextView timer;
     TextView scoreTV;
 
+
+//useful vairables
     int score = 0;
     boolean readyToShoot = false;
-    private float startAim;
     long down;
     int currentLocationOfTarget;
-    float currentAim;
+    float horizontalSpeed;
+    float verticalSpeed;
+
 
     Random randomgenerator = new Random();
 
@@ -58,31 +62,41 @@ public class MainActivity extends AppCompatActivity implements RocketAnimation.R
         {
             case MotionEvent.ACTION_DOWN:
                 down = System.currentTimeMillis();
-                startAim = event.getY();
+                verticalSpeed = event.getY();
+                horizontalSpeed = event.getX();
+                Log.d(TAG, "STARTING POSITION X" +horizontalSpeed + "");
                 return true;
             case MotionEvent.ACTION_UP:
                 if (readyToShoot)
                 {
+
+
                     readyToShoot = false;
-                    currentAim = startAim - event.getY();
-                    startAnimation(currentAim, System.currentTimeMillis() - down);
+                    verticalSpeed  -= event.getY();
+                    horizontalSpeed = event.getX() - horizontalSpeed;
+
+                    double distance = Math.sqrt(verticalSpeed * verticalSpeed + horizontalSpeed + horizontalSpeed);
+
+                    Log.d(TAG, "ENDING POSITION X" +horizontalSpeed + "");
+                    startAnimation(verticalSpeed, horizontalSpeed, System.currentTimeMillis() - down);
                 }
                 return true;
         }
         return false;
     }
 
-    private void startAnimation(float v, long duration)
+    private void startAnimation(float v, float h, long duration)
     {
 //        mparams = (RelativeLayout.LayoutParams) rocket.getLayoutParams();
 //        originalX = mparams.getMarginEnd();
-        float aim = v / sky.getHeight();
-        RocketAnimation anim = new RocketAnimation(rocket, sky.getHeight() - rocket.getHeight() - 32, sky.getWidth() - rocket.getWidth() - 32, aim, this, duration);
+        float aimV = v / sky.getHeight();
+        float aimH = h / sky.getWidth();
+        RocketAnimation anim = new RocketAnimation(rocket, sky.getHeight() - rocket.getHeight() - 32, sky.getWidth() - rocket.getWidth() - 32, aimV,aimH, this, duration);
         rocket.startAnimation(anim);
     }
 
     @Override
-    public void onRocketLanded()
+    public void onRocketLanded(float h)
     {
         rocket.clearAnimation();
         readyToShoot = true;
@@ -91,14 +105,14 @@ public class MainActivity extends AppCompatActivity implements RocketAnimation.R
         sky.invalidate();
 
 
-        checkForTargetHit();
+        checkForTargetHit(h);
 
 
     }
 
-    private void checkForTargetHit()
+    private void checkForTargetHit( float h)
     {
-        int myaim = (int) (sky.getHeight() - currentAim);
+        int myaim = (int) (sky.getHeight() - h);
         Log.d(TAG, (myaim) + " - " + currentLocationOfTarget);
         if (myaim  < currentLocationOfTarget + 150 && myaim > currentLocationOfTarget - 150)
         {
