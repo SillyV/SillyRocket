@@ -1,4 +1,4 @@
-package com.rocket.vasili.sillyrocket;
+package com.sillyv.vasili.boomtank;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
